@@ -24,7 +24,9 @@ public class DinerGroup {
 	 */
 	public DinerGroup(Dish lastDishInTable) {
 		int amount = Utils.randomBetween(1, 3);
-		time = Utils.randomBetween(10, 17);
+		//300Comensales --> /2 = 150ComensalesXmesero --> /2 = 75ComensalesXmesa  720HTrabajadas/75 = 10min Aprox.
+		//200Comensales --> /2 = 100ComensalesXMesero --> /2 = 50ComesalesXmesa   720Htrabajadas/50 = 15min Aprox.
+		time = Utils.randomBetween(10, 15);  
 		dishs = new ArrayList<>(amount);
 		Dish d = DishUtils.getRandomDish();
 		while (lastDishInTable.equals(d)) {

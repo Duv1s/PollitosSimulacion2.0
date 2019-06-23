@@ -10,7 +10,7 @@ import com.pollitosSimulation.logic.entity.Dish;
 public class DishUtils {
 
 	public static final String DISH_NAME_1 = "Bandeja Paisa";
-	public static final String DISH_NAME_2 = "Cuchuco de Trigo";
+	public static final String DISH_NAME_2 = "Cuchuco de Trigo con Espinazo";
 	public static final String DISH_NAME_3 = "Paella a la Valenciana";
 	public static final String DISH_NAME_4 = "Arroz con Pollo";
 

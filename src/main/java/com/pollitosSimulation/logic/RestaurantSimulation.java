@@ -18,7 +18,7 @@ public class RestaurantSimulation {
 	private int maxHourWorkDay;
 	private int minDinerWorkDay;
 	private int minHoursWorkDay;
-	private final int timeToSimulate = 9000;
+	private final int timeToSimulate = 9000; //150 Horas
 	private int actualSimulationTime = 0;
 
 	/**
@@ -39,7 +39,7 @@ public class RestaurantSimulation {
 		for (int i = 0; i < tables; i++)
 			listTables.add(new Table());
 		for (int i = 0; i < waiterAmount; i++)
-			listWaiter.add(new Waiter(true, 2));
+			listWaiter.add(new Waiter(true, 2)); 
 		this.maxDinerWorkDay = maxDinerWorkDay;
 		this.maxHourWorkDay = maxHourWorkDay;
 		this.minDinerWorkDay = minDinerWorkDay;

@@ -24,7 +24,7 @@ public class Table {
 	}
 
 	/**
-	 * devuelve el ultimo plato solicitado en esat mesa
+	 * devuelve el ultimo plato solicitado en esta mesa
 	 * 
 	 * @return último plato solicitado
 	 */

@@ -26,6 +26,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @author Duvis Gómez && Martin Vivanco
  * @version 2.0
  */
+@SuppressWarnings("restriction")
 public class FXMLController implements Initializable {
 
 	private NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
