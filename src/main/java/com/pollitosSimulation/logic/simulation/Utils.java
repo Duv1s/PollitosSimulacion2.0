@@ -1,4 +1,4 @@
-package com.pollitosSimulation.logic;
+package com.pollitosSimulation.logic.simulation;
 
 import java.util.Random;
 
@@ -18,7 +18,7 @@ public class Utils {
 	 * @param max valor maximo
 	 * @return entero aleatorio
 	 */
-	public static int randomBetween(int min, int max) {
+	public static int aleatorioEntre(int min, int max) {
 		return RANDOM.nextInt((max - min) + 1) + min;
 	}
 }

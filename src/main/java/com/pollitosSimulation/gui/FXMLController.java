@@ -5,11 +5,11 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.pollitosSimulation.logic.DishUtils;
-import com.pollitosSimulation.logic.RestaurantSimulation;
-import com.pollitosSimulation.logic.entity.DinerGroup;
-import com.pollitosSimulation.logic.entity.Table;
-import com.pollitosSimulation.logic.entity.TableStat;
+import com.pollitosSimulation.logic.simulation.UtilsPlato;
+import com.pollitosSimulation.logic.simulation.SimulacionRestaurante;
+import com.pollitosSimulation.logic.entity.GrupoComensales;
+import com.pollitosSimulation.logic.entity.Mesa;
+import com.pollitosSimulation.logic.entity.EstadisticasMesa;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,10 +30,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class FXMLController implements Initializable {
 
 	private NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
-	private ObservableList<TableStat> T1, T2, T3, T4, T5;
+	private ObservableList<EstadisticasMesa> T1, T2, T3, T4, T5;
 
 	@FXML
-	private TableView<TableStat> Table1Stats, Table2Stats, Table3Stats, Table4Stats, Table5Stats;
+	private TableView<EstadisticasMesa> Table1Stats, Table2Stats, Table3Stats, Table4Stats, Table5Stats;
 
 	// Mesa 1
 	@FXML
@@ -61,11 +61,11 @@ public class FXMLController implements Initializable {
 			TotalD3Gains, TotalD4Sells, TotalD4Gains;
 
 	@FXML
-	private TableColumn<TableStat, Integer> T1Column1, T1Column2, T2Column1, T2Column2, T3Column1, T3Column2, T4Column1,
+	private TableColumn<EstadisticasMesa, Integer> T1Column1, T1Column2, T2Column1, T2Column2, T3Column1, T3Column2, T4Column1,
 			T4Column2, T5Column1, T5Column2;
 
 	@FXML
-	private TableColumn<TableStat, String> T1Column3, T2Column3, T3Column3, T4Column3, T5Column3;
+	private TableColumn<EstadisticasMesa, String> T1Column3, T2Column3, T3Column3, T4Column3, T5Column3;
 
 	/**
 	 * da inicio a la simulación cuando se presiona el botón
@@ -74,143 +74,142 @@ public class FXMLController implements Initializable {
 	 */
 	@FXML
 	private void start(ActionEvent event) {
-		RestaurantSimulation rs = new RestaurantSimulation(2, 300, 12, 200, 10, 150, 5);
-		rs.start();
-		fillTable1Stats(rs.getTable(1));
-		fillTable2Stats(rs.getTable(2));
-		fillTable3Stats(rs.getTable(3));
-		fillTable4Stats(rs.getTable(4));
-		fillTable5Stats(rs.getTable(5));
-		fillTableTotalStats(rs);
-//        rs.printTableStats();
+		SimulacionRestaurante sumulacionResta = new SimulacionRestaurante(2, 300, 12, 200, 10, 150, 5);
+		sumulacionResta.start();
+		llenarTablaMesa1(sumulacionResta.getMesa(1));
+		llenarTablaMesa2(sumulacionResta.getMesa(2));
+		llenarTablaMesa3(sumulacionResta.getMesa(3));
+		llenarTablaMesa4(sumulacionResta.getMesa(4));
+		llenarTablaMesa5(sumulacionResta.getMesa(5));
+		llenarEstadisticasTotales(sumulacionResta);
 	}
 
 	/**
 	 * llena las estadisticas e informacion para la mesa 1
 	 * 
-	 * @param t mesa
+	 * @param mesa mesa
 	 */
-	private void fillTable1Stats(Table t) {
+	private void llenarTablaMesa1(Mesa mesa) {
 		T1.clear();
-		for (DinerGroup dg : t.getListDish()) {
-			T1.add(new TableStat(dg.getTime(), dg.getDinerAmount(), dg.getDishs()));
+		for (GrupoComensales gC : mesa.getListaPlatos()) {
+			T1.add(new EstadisticasMesa(gC.getTiempo(), gC.getCantidadComensales(), gC.getListaPlatos()));
 		}
-		T1AttentionTime.setText(String.format("%.3f", ((double) t.getTotalTime()) / 60) + " Horas");
-		T1Diners.setText("" + t.getTotalDiners());
-		T1D1Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_1));
-		T1D1Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_1)));
-		T1D2Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_2));
-		T1D2Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_2)));
-		T1D3Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_3));
-		T1D3Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_3)));
-		T1D4Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_4));
-		T1D4Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_4)));
+		T1AttentionTime.setText(String.format("%.3f", ((double) mesa.getTiempoTotal()) / 60) + " Horas");
+		T1Diners.setText("" + mesa.getTotalComensales());
+		T1D1Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_UNO));
+		T1D1Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_UNO)));
+		T1D2Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_DOS));
+		T1D2Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_DOS)));
+		T1D3Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_TRES));
+		T1D3Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_TRES)));
+		T1D4Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_CUATRO));
+		T1D4Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_CUATRO)));
 	}
 
 	/**
 	 * llena las estadisticas e informacion para la mesa 2
 	 * 
-	 * @param t mesa
+	 * @param mesa mesa
 	 */
-	private void fillTable2Stats(Table t) {
+	private void llenarTablaMesa2(Mesa mesa) {
 		T2.clear();
-		for (DinerGroup dg : t.getListDish()) {
-			T2.add(new TableStat(dg.getTime(), dg.getDinerAmount(), dg.getDishs()));
+		for (GrupoComensales gC : mesa.getListaPlatos()) {
+			T2.add(new EstadisticasMesa(gC.getTiempo(), gC.getCantidadComensales(), gC.getListaPlatos()));
 		}
-		T2AttentionTime.setText(String.format("%.3f", ((double) t.getTotalTime()) / 60) + " Horas");
-		T2Diners.setText("" + t.getTotalDiners());
-		T2D1Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_1));
-		T2D1Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_1)));
-		T2D2Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_2));
-		T2D2Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_2)));
-		T2D3Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_3));
-		T2D3Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_3)));
-		T2D4Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_4));
-		T2D4Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_4)));
+		T2AttentionTime.setText(String.format("%.3f", ((double) mesa.getTiempoTotal()) / 60) + " Horas");
+		T2Diners.setText("" + mesa.getTotalComensales());
+		T2D1Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_UNO));
+		T2D1Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_UNO)));
+		T2D2Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_DOS));
+		T2D2Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_DOS)));
+		T2D3Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_TRES));
+		T2D3Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_TRES)));
+		T2D4Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_CUATRO));
+		T2D4Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_CUATRO)));
 	}
 
 	/**
 	 * llena las estadisticas e informacion para la mesa 3
 	 * 
-	 * @param t mesa
+	 * @param mesa mesa
 	 */
-	private void fillTable3Stats(Table t) {
+	private void llenarTablaMesa3(Mesa mesa) {
 		T3.clear();
-		for (DinerGroup dg : t.getListDish()) {
-			T3.add(new TableStat(dg.getTime(), dg.getDinerAmount(), dg.getDishs()));
+		for (GrupoComensales gC : mesa.getListaPlatos()) {
+			T3.add(new EstadisticasMesa(gC.getTiempo(), gC.getCantidadComensales(), gC.getListaPlatos()));
 		}
-		T3AttentionTime.setText(String.format("%.3f", ((double) t.getTotalTime()) / 60) + " Horas");
-		T3Diners.setText("" + t.getTotalDiners());
-		T3D1Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_1));
-		T3D1Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_1)));
-		T3D2Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_2));
-		T3D2Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_2)));
-		T3D3Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_3));
-		T3D3Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_3)));
-		T3D4Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_4));
-		T3D4Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_4)));
+		T3AttentionTime.setText(String.format("%.3f", ((double) mesa.getTiempoTotal()) / 60) + " Horas");
+		T3Diners.setText("" + mesa.getTotalComensales());
+		T3D1Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_UNO));
+		T3D1Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_UNO)));
+		T3D2Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_DOS));
+		T3D2Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_DOS)));
+		T3D3Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_TRES));
+		T3D3Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_TRES)));
+		T3D4Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_CUATRO));
+		T3D4Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_CUATRO)));
 	}
 
 	/**
 	 * llena las estadisticas e informacion para la mesa 4
 	 * 
-	 * @param t mesa
+	 * @param mesa mesa
 	 */
-	private void fillTable4Stats(Table t) {
+	private void llenarTablaMesa4(Mesa mesa) {
 		T4.clear();
-		for (DinerGroup dg : t.getListDish()) {
-			T4.add(new TableStat(dg.getTime(), dg.getDinerAmount(), dg.getDishs()));
+		for (GrupoComensales dg : mesa.getListaPlatos()) {
+			T4.add(new EstadisticasMesa(dg.getTiempo(), dg.getCantidadComensales(), dg.getListaPlatos()));
 		}
-		T4AttentionTime.setText(String.format("%.3f", ((double) t.getTotalTime()) / 60) + " Horas");
-		T4Diners.setText("" + t.getTotalDiners());
-		T4D1Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_1));
-		T4D1Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_1)));
-		T4D2Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_2));
-		T4D2Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_2)));
-		T4D3Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_3));
-		T4D3Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_3)));
-		T4D4Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_4));
-		T4D4Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_4)));
+		T4AttentionTime.setText(String.format("%.3f", ((double) mesa.getTiempoTotal()) / 60) + " Horas");
+		T4Diners.setText("" + mesa.getTotalComensales());
+		T4D1Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_UNO));
+		T4D1Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_UNO)));
+		T4D2Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_DOS));
+		T4D2Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_DOS)));
+		T4D3Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_TRES));
+		T4D3Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_TRES)));
+		T4D4Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_CUATRO));
+		T4D4Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_CUATRO)));
 	}
 
 	/**
 	 * llena las estadisticas e informacion para la mesa 5
 	 * 
-	 * @param t mesa
+	 * @param mesa mesa
 	 */
-	private void fillTable5Stats(Table t) {
+	private void llenarTablaMesa5(Mesa mesa) {
 		T5.clear();
-		for (DinerGroup dg : t.getListDish()) {
-			T5.add(new TableStat(dg.getTime(), dg.getDinerAmount(), dg.getDishs()));
+		for (GrupoComensales gC : mesa.getListaPlatos()) {
+			T5.add(new EstadisticasMesa(gC.getTiempo(), gC.getCantidadComensales(), gC.getListaPlatos()));
 		}
-		T5AttentionTime.setText(String.format("%.3f", ((double) t.getTotalTime()) / 60) + " Horas");
-		T5Diners.setText("" + t.getTotalDiners());
-		T5D1Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_1));
-		T5D1Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_1)));
-		T5D2Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_2));
-		T5D2Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_2)));
-		T5D3Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_3));
-		T5D3Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_3)));
-		T5D4Sells.setText("" + t.getTotalAmountDishOf(DishUtils.DISH_NAME_4));
-		T5D4Gains.setText(currencyFormatter.format(t.getTotalGainDishOf(DishUtils.DISH_NAME_4)));
+		T5AttentionTime.setText(String.format("%.3f", ((double) mesa.getTiempoTotal()) / 60) + " Horas");
+		T5Diners.setText("" + mesa.getTotalComensales());
+		T5D1Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_UNO));
+		T5D1Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_UNO)));
+		T5D2Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_DOS));
+		T5D2Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_DOS)));
+		T5D3Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_TRES));
+		T5D3Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_TRES)));
+		T5D4Sells.setText("" + mesa.getTotalCantidadTotalPlato(UtilsPlato.PLATO_CUATRO));
+		T5D4Gains.setText(currencyFormatter.format(mesa.getGananciaTotalPlato(UtilsPlato.PLATO_CUATRO)));
 	}
 
 	/**
 	 * Muestra las estadisticas e información final
 	 * 
-	 * @param rs mesa
+	 * @param simulacionRestaurante mesa
 	 */
-	private void fillTableTotalStats(RestaurantSimulation rs) {
-		TotalAttentionTime.setText(String.format("%.3f", ((double) rs.getActualSimulationTime()) / 60) + " Horas");
-		TotalDiners.setText("" + rs.getTotalDiners());
-		TotalD1Sells.setText("" + rs.getTotalAmountDishOf(DishUtils.DISH_NAME_1));
-		TotalD1Gains.setText(currencyFormatter.format(rs.getTotalGainDishOf(DishUtils.DISH_NAME_1)));
-		TotalD2Sells.setText("" + rs.getTotalAmountDishOf(DishUtils.DISH_NAME_2));
-		TotalD2Gains.setText(currencyFormatter.format(rs.getTotalGainDishOf(DishUtils.DISH_NAME_2)));
-		TotalD3Sells.setText("" + rs.getTotalAmountDishOf(DishUtils.DISH_NAME_3));
-		TotalD3Gains.setText(currencyFormatter.format(rs.getTotalGainDishOf(DishUtils.DISH_NAME_3)));
-		TotalD4Sells.setText("" + rs.getTotalAmountDishOf(DishUtils.DISH_NAME_4));
-		TotalD4Gains.setText(currencyFormatter.format(rs.getTotalGainDishOf(DishUtils.DISH_NAME_4)));
+	private void llenarEstadisticasTotales(SimulacionRestaurante simulacionRestaurante) {
+		TotalAttentionTime.setText(String.format("%.3f", ((double) simulacionRestaurante.getCantidadMesas()) / 60) + " Horas");
+		TotalDiners.setText("" + simulacionRestaurante.getClietnesTotal());
+		TotalD1Sells.setText("" + simulacionRestaurante.getVentasTotalesPPlato(UtilsPlato.PLATO_UNO));
+		TotalD1Gains.setText(currencyFormatter.format(simulacionRestaurante.getGananciaTotalPPlato(UtilsPlato.PLATO_UNO)));
+		TotalD2Sells.setText("" + simulacionRestaurante.getVentasTotalesPPlato(UtilsPlato.PLATO_DOS));
+		TotalD2Gains.setText(currencyFormatter.format(simulacionRestaurante.getGananciaTotalPPlato(UtilsPlato.PLATO_DOS)));
+		TotalD3Sells.setText("" + simulacionRestaurante.getVentasTotalesPPlato(UtilsPlato.PLATO_TRES));
+		TotalD3Gains.setText(currencyFormatter.format(simulacionRestaurante.getGananciaTotalPPlato(UtilsPlato.PLATO_TRES)));
+		TotalD4Sells.setText("" + simulacionRestaurante.getVentasTotalesPPlato(UtilsPlato.PLATO_CUATRO));
+		TotalD4Gains.setText(currencyFormatter.format(simulacionRestaurante.getGananciaTotalPPlato(UtilsPlato.PLATO_CUATRO)));
 
 	}
 

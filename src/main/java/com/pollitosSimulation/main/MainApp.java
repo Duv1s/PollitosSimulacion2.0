@@ -20,7 +20,7 @@ public class MainApp extends Application {
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add("/styles/Styles.css");
 
-		stage.setTitle("Restaurant Simulation T2");
+		stage.setTitle("Pollitos 2.0");
 		stage.setScene(scene);
 		stage.show();
 	}
